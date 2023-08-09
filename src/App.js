@@ -48,15 +48,56 @@ function App() {
     return `${day} ${date} ${month} ${year}`
   }
 
-  {/* func below creates time */}
+  {/* func below calc if AM or PM */}
 
-  const realtime = () => {
+  const noontime = () => {
+    
+    var hours2a = Math.floor( ( (weather.dt+weather.timezone) % 86400 ) / 3600 );
+
+    if (hours2a>19){
+      var noon1 = "PM"
+    }else{
+      var noon1 = "AM"
+    }
+
+
+    return noon1
+  }
+
+  {/* func below calc minutes part */}
+
+  const realtime1 = () => {
+    
+    var mins2 = Math.floor( ( (weather.dt+weather.timezone) % 3600 ) / 60 );
+
+
+    return mins2
+  }
+
+  {/* func below properly formats minutes */}
+
+  const realtime1a = () => {
+    
+    var mins2a = realtime1();
+
+    if (mins2a<10){
+      var mins2b = "0" + mins2a;
+    }else{
+      var mins2b = mins2a + "";
+    }
+
+    return mins2b
+    
+  }
+
+  {/* func below calc hours */}
+
+  const realtime2 = () => {
     console.log(weather);
-    var pretime = new Date( (weather.dt)*1000);
-    var hours1 = pretime.toTimeString();
+    var hours2 = Math.floor( ( (weather.dt+weather.timezone) % 86400 ) / 3600 );
 
 
-    return hours1
+    return hours2%12
   }
 
   {/* func below decides on the background */}
@@ -64,7 +105,7 @@ function App() {
   const weatherfunc = () => {
     const timeactual = new Date((weather.main.sunrise + weather.timezone) * 1000);
     if (weather.weather[0].id===800){
-      if(timeactual.getHours()>19){
+      if(realtime2()>19){
         return "clearnight"
       }
       else if (weather.main.temp<16){
@@ -75,7 +116,7 @@ function App() {
       }
     }
     else if (weather.weather[0].id>800){
-      if(timeactual.getHours()>19){
+      if(realtime2()>8){
         return "cloudynight";
       }else{
         return "cloudyday";
@@ -86,10 +127,10 @@ function App() {
     }else if (weather.weather[0].id<623){
       return "snow";
     }else{
-      if(timeactual.getHours()>20){
+      if(realtime2()>8){
         return "clearnight"
       }
-      else if (weather.main.temp<16){
+      else if (weather.main.temp<19){
         return "clearcold";
       }
       else{
@@ -130,7 +171,7 @@ function App() {
 
             <div className="date">{dateBuilder(new Date())}</div>
 
-            <div className="time1">{realtime()}</div>
+            <div className="time1">{realtime2()}:{realtime1a()} {noontime()}</div>
 
           </div>
 
